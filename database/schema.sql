@@ -1,4 +1,4 @@
--- TK3 KO Tournament Manager · Fases 1 y 2
+-- TK3 KO Tournament Manager · Fases 1 a 3
 -- The backend creates these tables on startup if they do not exist;
 -- this script documents the structure and allows creating them by hand.
 
@@ -13,13 +13,17 @@ CREATE TABLE IF NOT EXISTS participants (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- status: PREPARACION (players can still change) | GENERADO (the draw is done)
+--         EN_CURSO (results being entered) | FINALIZADO (champion: no more changes)
 CREATE TABLE IF NOT EXISTS tournaments (
     id                   INT          NOT NULL AUTO_INCREMENT,
     name                 VARCHAR(80)  NOT NULL,
     status               VARCHAR(20)  NOT NULL DEFAULT 'PREPARACION',
     created_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     bracket_generated_at DATETIME     NULL,
-    PRIMARY KEY (id)
+    champion_id          INT          NULL,
+    finished_at          DATETIME     NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (champion_id) REFERENCES participants (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Players enrolled in each tournament (N:M). The primary key prevents duplicates.
@@ -51,3 +55,7 @@ CREATE TABLE IF NOT EXISTS matches (
     FOREIGN KEY (participant2_id) REFERENCES participants (id),
     FOREIGN KEY (winner_id) REFERENCES participants (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Phase 3 migration for databases created in phase 2 (the backend runs it on startup):
+-- ALTER TABLE tournaments ADD COLUMN champion_id INT NULL REFERENCES participants (id);
+-- ALTER TABLE tournaments ADD COLUMN finished_at DATETIME NULL;

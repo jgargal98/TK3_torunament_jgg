@@ -45,7 +45,19 @@ El frontend nunca accede a la base de datos: todo pasa por la API.
   - El cuadro no se puede generar dos veces.
   - No se puede sortear si algún jugador se ha desactivado después de inscribirse.
 
-Pendiente: fase 3 (combates y campeón) y fase 4 (informes).
+## Estado: Fase 3 · Combates, rondas y campeón ✅
+
+- **Registrar un ganador:** se pulsa sobre un jugador de un combate pendiente en el cuadro y se confirma en un diálogo. Un resultado no se puede deshacer.
+- **Reglas que comprueba el backend:**
+  - El ganador debe ser uno de los dos jugadores del combate.
+  - Un combate resuelto o un BYE no admite resultado.
+  - No se pueden registrar resultados en un torneo finalizado.
+- **Avance automático de ronda:** cuando todos los combates de la ronda tienen ganador, el backend crea la siguiente. Respeta el orden del cuadro: los ganadores de los combates 2k y 2k+1 se enfrentan en el combate k.
+- **Campeón:** al resolverse la final, el torneo pasa a **Finalizado**, guarda el campeón y la fecha, y se muestra la pantalla de campeón.
+- **Estados del torneo:** Preparación → Cuadro generado → En curso → Finalizado.
+- **Migración:** al arrancar, el backend añade a `tournaments` las columnas nuevas (`champion_id`, `finished_at`) si la tabla ya existía.
+
+Pendiente: fase 4 (informes y estadísticas).
 
 ## API
 
@@ -63,6 +75,7 @@ Pendiente: fase 3 (combates y campeón) y fase 4 (informes).
 | PUT | `/api/tournaments/{id}` | Edita nombre y jugadores (solo en preparación) |
 | DELETE | `/api/tournaments/{id}` | Elimina el torneo (solo en preparación) |
 | POST | `/api/tournaments/{id}/bracket` | Sorteo aleatorio de la primera ronda |
+| PUT | `/api/matches/{id}/winner` | Registra el ganador `{ "winner_id": 3 }` y avanza la ronda si está completa |
 
 La documentación interactiva está en http://localhost:8000/docs.
 
