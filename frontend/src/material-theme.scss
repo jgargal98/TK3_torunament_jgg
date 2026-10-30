@@ -18,13 +18,14 @@ html {
     density: 0,
   ));
 
-  // Arcade look: square corners on every Material component.
-  --mat-sys-corner-extra-small: 0;
-  --mat-sys-corner-small: 0;
-  --mat-sys-corner-medium: 0;
-  --mat-sys-corner-large: 0;
-  --mat-sys-corner-extra-large: 0;
-  --mat-sys-corner-full: 0;
+  // Arcade look: square corners on every Material component. Always with a unit
+  // (0px): Material uses these values inside max()/calc(), where a bare 0 is invalid.
+  --mat-sys-corner-extra-small: 0px;
+  --mat-sys-corner-small: 0px;
+  --mat-sys-corner-medium: 0px;
+  --mat-sys-corner-large: 0px;
+  --mat-sys-corner-extra-large: 0px;
+  --mat-sys-corner-full: 0px;
 }
 
 body {
