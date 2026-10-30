@@ -19,8 +19,18 @@ export type ParticipantFilter = 'all' | 'active' | 'inactive';
 /** Short version of a participant used inside tournaments and matches. */
 export type ParticipantSummary = Pick<Participant, 'id' | 'nick' | 'logo' | 'active'>;
 
-/** PREPARACION: players can still be changed. GENERADO: the draw is done. */
-export type TournamentStatus = 'PREPARACION' | 'GENERADO';
+/**
+ * PREPARACION: players can still be changed. GENERADO: the draw is done.
+ * EN_CURSO: at least one result. FINALIZADO: there is a champion, no more changes.
+ */
+export type TournamentStatus = 'PREPARACION' | 'GENERADO' | 'EN_CURSO' | 'FINALIZADO';
+
+export const STATUS_LABELS: Record<TournamentStatus, string> = {
+  PREPARACION: 'Preparación',
+  GENERADO: 'Cuadro generado',
+  EN_CURSO: 'En curso',
+  FINALIZADO: 'Finalizado',
+};
 
 export interface Match {
   id: number;
@@ -32,6 +42,7 @@ export interface Match {
   participant2: ParticipantSummary | null;
   winner_id: number | null;
   is_bye: boolean;
+  resolved_at: string | null;
 }
 
 /** Tournament as shown in the list (GET /api/tournaments). */
@@ -41,13 +52,18 @@ export interface TournamentSummary {
   status: TournamentStatus;
   created_at: string;
   bracket_generated_at: string | null;
+  finished_at: string | null;
   participant_count: number;
   total_rounds: number;
   bye_count: number;
+  /** Last round created so far (null before the draw). */
+  current_round: number | null;
+  pending_matches: number;
   logos: string[];
+  champion: ParticipantSummary | null;
 }
 
-/** Full tournament with its players and first-round matches. */
+/** Full tournament with its players and every match created so far. */
 export interface TournamentDetail extends TournamentSummary {
   participants: ParticipantSummary[];
   matches: Match[];

@@ -17,9 +17,7 @@
 } @else if (tournament(); as tournament) {
   <header class="header">
     <div class="title-block">
-      <span class="status" [class.generated]="!isPreparation()">
-        {{ isPreparation() ? 'Preparación' : 'Cuadro generado' }}
-      </span>
+      <span class="status" [attr.data-status]="tournament.status">{{ statusLabel() }}</span>
       <h1>{{ tournament.name }}</h1>
       <p class="meta">
         {{ tournament.participant_count }} jugadores · {{ tournament.total_rounds }} rondas ·
@@ -89,12 +87,40 @@
       </mat-card>
     }
   } @else {
+    @if (isFinished() && tournament.champion; as champion) {
+      <section class="champion" aria-live="polite">
+        <p class="champion-label">★ Champion ★</p>
+        <div class="champion-logo" aria-hidden="true">{{ champion.logo }}</div>
+        <h2 class="champion-nick">{{ champion.nick }}</h2>
+        <p class="champion-meta">
+          Gana «{{ tournament.name }}»
+          @if (tournament.finished_at) {
+            · {{ tournament.finished_at | date: 'dd/MM/yyyy HH:mm' }}
+          }
+        </p>
+        <p class="champion-lock"><mat-icon>lock</mat-icon> Torneo finalizado: no admite más cambios</p>
+      </section>
+    } @else {
+      <p class="progress">
+        <mat-icon>sports_esports</mat-icon>
+        <span>
+          {{ rounds()[(tournament.current_round ?? 1) - 1]?.name }} ·
+          {{ tournament.pending_matches }}
+          {{ tournament.pending_matches === 1 ? 'combate pendiente' : 'combates pendientes' }}
+          — pulsa sobre el ganador de cada combate
+        </span>
+      </p>
+    }
+
     <section class="bracket-section">
       <h2>Cuadro</h2>
-      <app-bracket [rounds]="rounds()" />
+      <app-bracket [rounds]="rounds()" [interactive]="!isFinished() && !busy()" (pick)="pickWinner($event)" />
       <p class="legend">
-        <span class="legend-item"><span class="swatch advanced"></span> Pasa por BYE</span>
-        <span class="legend-item"><span class="swatch future"></span> Por decidir (fase 3)</span>
+        <span class="legend-item"><span class="swatch winner"></span> Ganador / pasa por BYE</span>
+        @if (!isFinished()) {
+          <span class="legend-item"><span class="swatch playable"></span> Combate pendiente</span>
+          <span class="legend-item"><span class="swatch future"></span> Por decidir</span>
+        }
       </p>
     </section>
   }

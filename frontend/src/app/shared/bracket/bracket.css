@@ -140,7 +140,62 @@
   color: var(--arcade-muted-ink);
 }
 
-/* Player who went straight to this round thanks to a BYE. */
-.row.advanced {
+/* Winner of the match (or the player who goes through with a BYE). */
+.row.winner {
   background: var(--arcade-lime);
+}
+
+.row.loser {
+  opacity: 0.45;
+}
+
+.row.loser .nick {
+  text-decoration: line-through;
+}
+
+.tag,
+.hint {
+  margin-left: auto;
+  padding: 3px 4px;
+  font-family: var(--arcade-font);
+  font-size: 7px;
+  border: 2px solid var(--arcade-ink);
+}
+
+.tag {
+  background: var(--arcade-ink);
+  color: var(--arcade-lime);
+}
+
+/* Pending match: each player is a button to pick the winner. */
+.match.playable {
+  border-color: var(--arcade-pink);
+  box-shadow: 4px 4px 0 var(--arcade-pink);
+}
+
+.row.pick {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.row.pick .hint {
+  visibility: hidden;
+  background: var(--arcade-yellow);
+}
+
+.row.pick:hover,
+.row.pick:focus-visible {
+  background: var(--arcade-yellow);
+  outline: none;
+}
+
+.row.pick:hover .hint,
+.row.pick:focus-visible .hint {
+  visibility: visible;
+  background: var(--arcade-paper);
 }

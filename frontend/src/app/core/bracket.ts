@@ -21,11 +21,12 @@ export function roundName(round: number, rounds: number): string {
   return names[matchesInRound] ?? `Ronda ${round}`;
 }
 
-/** One box of the bracket tree. Future matches have no id and may have empty slots. */
+/** One box of the bracket tree. Matches not created yet have no id. */
 export interface BracketMatch {
   id: number | null;
   slot1: ParticipantSummary | null;
   slot2: ParticipantSummary | null;
+  winnerId: number | null;
   isBye: boolean;
 }
 
@@ -35,50 +36,62 @@ export interface BracketRound {
   matches: BracketMatch[];
 }
 
+/** A match can be played when it exists, has both players and no winner yet. */
+export function isPlayable(match: BracketMatch): boolean {
+  return match.id !== null && !match.isBye && !!match.slot1 && !!match.slot2 && !match.winnerId;
+}
+
 /**
- * Builds every round of the tree from the stored first round. In phase 2 only round 1
- * exists in the database: the next rounds are drawn empty ("???"), except for the
- * players that went through with a BYE, who already appear in round 2.
+ * Builds every round of the tree. Rounds already stored in the database are shown as
+ * they are; the next ones are projected from the known winners (BYEs or played
+ * matches) and the rest is drawn empty ("???").
  */
 export function buildBracket(matches: Match[], participantCount: number): BracketRound[] {
   const rounds = totalRounds(participantCount);
-  const firstRound = [...matches]
-    .filter((match) => match.round === 1)
-    .sort((a, b) => a.position - b.position);
-  if (rounds === 0 || firstRound.length === 0) {
+  if (rounds === 0 || matches.length === 0) {
     return [];
   }
 
-  const result: BracketRound[] = [
-    {
-      number: 1,
-      name: roundName(1, rounds),
-      matches: firstRound.map((match) => ({
-        id: match.id,
-        slot1: match.participant1,
-        slot2: match.participant2,
-        isBye: match.is_bye,
-      })),
-    },
-  ];
+  const result: BracketRound[] = [];
+  for (let round = 1; round <= rounds; round++) {
+    const stored = matches
+      .filter((match) => match.round === round)
+      .sort((a, b) => a.position - b.position);
 
-  for (let round = 2; round <= rounds; round++) {
-    const previous = result[round - 2].matches;
-    const current: BracketMatch[] = [];
-    for (let index = 0; index < previous.length / 2; index++) {
-      current.push({
-        id: null,
-        slot1: winnerOf(previous[2 * index]),
-        slot2: winnerOf(previous[2 * index + 1]),
-        isBye: false,
-      });
-    }
-    result.push({ number: round, name: roundName(round, rounds), matches: current });
+    const roundMatches: BracketMatch[] =
+      stored.length > 0
+        ? stored.map((match) => ({
+            id: match.id,
+            slot1: match.participant1,
+            slot2: match.participant2,
+            winnerId: match.winner_id,
+            isBye: match.is_bye,
+          }))
+        : projectNextRound(result[round - 2].matches);
+
+    result.push({ number: round, name: roundName(round, rounds), matches: roundMatches });
   }
   return result;
 }
 
-/** Only BYE matches have a known winner before phase 3. */
+/** Matches 2k and 2k+1 of a round feed match k of the next one. */
+function projectNextRound(previous: BracketMatch[]): BracketMatch[] {
+  const next: BracketMatch[] = [];
+  for (let index = 0; index < previous.length / 2; index++) {
+    next.push({
+      id: null,
+      slot1: winnerOf(previous[2 * index]),
+      slot2: winnerOf(previous[2 * index + 1]),
+      winnerId: null,
+      isBye: false,
+    });
+  }
+  return next;
+}
+
 function winnerOf(match: BracketMatch): ParticipantSummary | null {
-  return match.isBye ? match.slot1 : null;
+  if (match.winnerId === null) {
+    return null;
+  }
+  return match.slot1?.id === match.winnerId ? match.slot1 : match.slot2;
 }

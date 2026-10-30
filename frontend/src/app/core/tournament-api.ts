@@ -35,4 +35,11 @@ export class TournamentApi {
   generateBracket(id: number): Observable<TournamentDetail> {
     return this.http.post<TournamentDetail>(`${this.url}/${id}/bracket`, {});
   }
+
+  /** Stores the winner of a match. The server creates the next round when it is complete. */
+  setWinner(matchId: number, winnerId: number): Observable<TournamentDetail> {
+    return this.http.put<TournamentDetail>(`${API_BASE_URL}/matches/${matchId}/winner`, {
+      winner_id: winnerId,
+    });
+  }
 }

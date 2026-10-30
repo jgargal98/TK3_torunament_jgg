@@ -23,8 +23,9 @@ export interface ConfirmDialogData {
     </mat-dialog-actions>
   `,
   styles: `
-    h2 {
-      font-size: 13px;
+    :host {
+      --mat-dialog-subhead-size: 13px;
+      --mat-dialog-subhead-line-height: 1.6;
     }
     mat-dialog-content {
       font-weight: 700;

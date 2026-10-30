@@ -32,13 +32,17 @@
       <a class="tournament-link" [routerLink]="['/torneos', tournament.id]">
         <mat-card appearance="outlined" class="tournament">
           <div class="top">
-            <span class="status" [class.generated]="tournament.status === 'GENERADO'">
-              {{ tournament.status === 'GENERADO' ? 'Cuadro generado' : 'Preparación' }}
+            <span class="status" [attr.data-status]="tournament.status">
+              {{ statusLabels[tournament.status] }}
             </span>
             <span class="date">{{ tournament.created_at | date: 'dd/MM/yyyy' }}</span>
           </div>
 
           <h2 class="name">{{ tournament.name }}</h2>
+
+          @if (tournament.champion; as champion) {
+            <p class="champion"><span aria-hidden="true">🏆 {{ champion.logo }}</span> {{ champion.nick }}</p>
+          }
 
           <div class="logos" aria-hidden="true">
             @for (logo of tournament.logos.slice(0, maxLogos); track $index) {

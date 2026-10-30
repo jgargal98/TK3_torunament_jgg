@@ -116,6 +116,12 @@ h3 {
   color: var(--arcade-ink);
 }
 
+.mat-mdc-dialog-container .mat-mdc-dialog-surface {
+  background: var(--arcade-paper);
+  border: var(--arcade-border);
+  box-shadow: 6px 6px 0 var(--arcade-pink);
+}
+
 .mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
   background: var(--arcade-ink);
   border: 3px solid var(--arcade-yellow);

@@ -11,9 +11,9 @@ import { filter, forkJoin, switchMap, timer } from 'rxjs';
 
 import { errorMessage } from '../../core/api';
 import { buildBracket } from '../../core/bracket';
-import { TournamentDetail as Tournament } from '../../core/models';
+import { STATUS_LABELS, TournamentDetail as Tournament } from '../../core/models';
 import { TournamentApi } from '../../core/tournament-api';
-import { Bracket } from '../../shared/bracket/bracket';
+import { Bracket, WinnerPick } from '../../shared/bracket/bracket';
 import { ConfirmDialog, ConfirmDialogData } from '../../shared/confirm-dialog/confirm-dialog';
 
 /** Minimum time the draw animation is shown, even if the API answers sooner. */
@@ -54,6 +54,11 @@ export class TournamentDetail implements OnInit {
   protected readonly reels = signal<string[]>([]);
 
   protected readonly isPreparation = computed(() => this.tournament()?.status === 'PREPARACION');
+  protected readonly isFinished = computed(() => this.tournament()?.status === 'FINALIZADO');
+  protected readonly statusLabel = computed(() => {
+    const tournament = this.tournament();
+    return tournament ? STATUS_LABELS[tournament.status] : '';
+  });
   protected readonly inactivePlayers = computed(
     () => this.tournament()?.participants.filter((p) => !p.active) ?? [],
   );
@@ -109,6 +114,51 @@ export class TournamentDetail implements OnInit {
         this.snackBar.open(errorMessage(err), 'Cerrar', { duration: 6000 });
       },
     });
+  }
+
+  /** Asks for confirmation (a result cannot be undone) and stores the winner. */
+  protected pickWinner(pick: WinnerPick): void {
+    if (this.busy()) {
+      return;
+    }
+    this.dialog
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
+        data: {
+          title: `¿Gana ${pick.winner.nick}?`,
+          message: `${pick.winner.logo} ${pick.winner.nick} pasa de ronda y ${pick.loser.nick} queda eliminado. El resultado no se puede cambiar.`,
+          confirmLabel: 'Confirmar',
+        },
+      })
+      .afterClosed()
+      .pipe(
+        filter((confirmed) => confirmed === true),
+        switchMap(() => {
+          this.busy.set(true);
+          return this.api.setWinner(pick.matchId, pick.winner.id);
+        }),
+      )
+      .subscribe({
+        next: (updated) => {
+          const previousRound = this.tournament()?.current_round;
+          this.tournament.set(updated);
+          this.busy.set(false);
+          if (updated.status === 'FINALIZADO' && updated.champion) {
+            this.snackBar.open(`🏆 ¡${updated.champion.nick} es el campeón!`, 'OK', {
+              duration: 4000,
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (updated.current_round !== previousRound) {
+            this.snackBar.open('¡Ronda completada! Siguiente ronda generada', 'OK', {
+              duration: 3000,
+            });
+          }
+        },
+        error: (err) => {
+          this.busy.set(false);
+          this.snackBar.open(errorMessage(err), 'Cerrar', { duration: 5000 });
+          this.load();
+        },
+      });
   }
 
   protected confirmDelete(): void {

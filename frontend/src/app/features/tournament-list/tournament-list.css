@@ -65,8 +65,27 @@ h1 {
   background: var(--arcade-yellow);
 }
 
-.status.generated {
+.status[data-status='GENERADO'] {
   background: var(--arcade-cyan);
+}
+
+.status[data-status='EN_CURSO'] {
+  background: var(--arcade-pink);
+}
+
+.status[data-status='FINALIZADO'] {
+  background: var(--arcade-lime);
+}
+
+.champion {
+  margin: 0;
+  padding: 6px 8px;
+  font-family: var(--arcade-font);
+  font-size: 9px;
+  line-height: 1.6;
+  color: var(--arcade-ink);
+  background: var(--arcade-yellow);
+  border: 2px solid var(--arcade-ink);
 }
 
 .date {

@@ -5,16 +5,22 @@
       <div class="matches">
         @for (match of round.matches; track $index) {
           <div class="slot">
-            <div class="match" [class.bye]="match.isBye" [class.future]="match.id === null">
+            <div
+              class="match"
+              [class.bye]="match.isBye"
+              [class.future]="match.id === null"
+              [class.playable]="canPick(match)"
+              [class.resolved]="match.winnerId !== null && !match.isBye"
+            >
               <ng-container
-                *ngTemplateOutlet="row; context: { $implicit: match.slot1, advanced: match.id === null }"
+                *ngTemplateOutlet="row; context: { $implicit: match.slot1, match: match }"
               />
               <div class="vs" aria-hidden="true">VS</div>
               @if (match.isBye) {
                 <div class="row bye-row">— BYE —</div>
               } @else {
                 <ng-container
-                  *ngTemplateOutlet="row; context: { $implicit: match.slot2, advanced: match.id === null }"
+                  *ngTemplateOutlet="row; context: { $implicit: match.slot2, match: match }"
                 />
               }
             </div>
@@ -25,13 +31,31 @@
   }
 </div>
 
-<ng-template #row let-player let-advanced="advanced">
-  @if (player) {
-    <div class="row" [class.advanced]="advanced">
+<ng-template #row let-player let-match="match">
+  @if (!player) {
+    <div class="row empty">???</div>
+  } @else if (canPick(match)) {
+    <button
+      type="button"
+      class="row pick"
+      [attr.aria-label]="'Registrar a ' + player.nick + ' como ganador'"
+      (click)="choose(match, player)"
+    >
       <span class="logo" aria-hidden="true">{{ player.logo }}</span>
       <span class="nick">{{ player.nick }}</span>
-    </div>
+      <span class="hint" aria-hidden="true">WIN?</span>
+    </button>
   } @else {
-    <div class="row empty">???</div>
+    <div
+      class="row"
+      [class.winner]="match.winnerId === player.id"
+      [class.loser]="match.winnerId !== null && match.winnerId !== player.id"
+    >
+      <span class="logo" aria-hidden="true">{{ player.logo }}</span>
+      <span class="nick">{{ player.nick }}</span>
+      @if (match.winnerId === player.id && !match.isBye) {
+        <span class="tag" aria-label="ganador">WIN</span>
+      }
+    </div>
   }
 </ng-template>

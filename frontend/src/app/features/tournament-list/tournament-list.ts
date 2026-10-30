@@ -7,7 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterLink } from '@angular/router';
 
 import { errorMessage } from '../../core/api';
-import { TournamentSummary } from '../../core/models';
+import { STATUS_LABELS, TournamentSummary } from '../../core/models';
 import { TournamentApi } from '../../core/tournament-api';
 
 /** How many logos are shown on each card before "+N". */
@@ -26,6 +26,7 @@ export class TournamentList implements OnInit {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly maxLogos = MAX_LOGOS;
+  protected readonly statusLabels = STATUS_LABELS;
 
   ngOnInit(): void {
     this.load();
