@@ -19,6 +19,10 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         <mat-icon>groups</mat-icon>
         <span>Participantes</span>
       </a>
+      <a routerLink="/torneos" routerLinkActive="active" class="nav-link">
+        <mat-icon>emoji_events</mat-icon>
+        <span>Torneos</span>
+      </a>
     </mat-toolbar>
 
     <main class="content">

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import OperationalError
 
-from app.api import health, participants
+from app.api import health, participants, tournaments
 from app.database import init_db
 from app.services.errors import NotFoundError, RuleError
 
@@ -23,7 +23,7 @@ async def lifespan(_: FastAPI):
 def create_app() -> FastAPI:
     application = FastAPI(
         title="TK3 KO Tournament Manager API",
-        description="API REST del gestor de torneos KO. Fase 1: gestión de participantes.",
+        description="API REST del gestor de torneos KO. Fases 1-2: participantes, torneos y cuadro KO.",
         version="0.1.0",
         lifespan=lifespan,
     )
@@ -52,6 +52,7 @@ def create_app() -> FastAPI:
     api = APIRouter(prefix="/api")
     api.include_router(health.router)
     api.include_router(participants.router)
+    api.include_router(tournaments.router)
     application.include_router(api)
     return application
 

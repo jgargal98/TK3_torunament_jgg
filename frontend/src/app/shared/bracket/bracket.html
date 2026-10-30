@@ -1,0 +1,37 @@
+<div class="bracket" role="list" aria-label="Cuadro del torneo">
+  @for (round of rounds(); track round.number; let last = $last) {
+    <section class="round" [class.last]="last" role="listitem">
+      <h3 class="round-name">{{ round.name }}</h3>
+      <div class="matches">
+        @for (match of round.matches; track $index) {
+          <div class="slot">
+            <div class="match" [class.bye]="match.isBye" [class.future]="match.id === null">
+              <ng-container
+                *ngTemplateOutlet="row; context: { $implicit: match.slot1, advanced: match.id === null }"
+              />
+              <div class="vs" aria-hidden="true">VS</div>
+              @if (match.isBye) {
+                <div class="row bye-row">— BYE —</div>
+              } @else {
+                <ng-container
+                  *ngTemplateOutlet="row; context: { $implicit: match.slot2, advanced: match.id === null }"
+                />
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+</div>
+
+<ng-template #row let-player let-advanced="advanced">
+  @if (player) {
+    <div class="row" [class.advanced]="advanced">
+      <span class="logo" aria-hidden="true">{{ player.logo }}</span>
+      <span class="nick">{{ player.nick }}</span>
+    </div>
+  } @else {
+    <div class="row empty">???</div>
+  }
+</ng-template>

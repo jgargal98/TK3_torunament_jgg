@@ -1,0 +1,61 @@
+<header class="page-header">
+  <div>
+    <h1>Torneos</h1>
+    <p class="subtitle">{{ tournaments().length }} torneos creados</p>
+  </div>
+  <a mat-flat-button routerLink="/torneos/nuevo">
+    <mat-icon>add</mat-icon>
+    Nuevo torneo
+  </a>
+</header>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+} @else if (error(); as message) {
+  <mat-card appearance="outlined" class="state-card error">
+    <mat-icon>cloud_off</mat-icon>
+    <p>{{ message }}</p>
+    <button mat-stroked-button (click)="load()">
+      <mat-icon>refresh</mat-icon>
+      Reintentar
+    </button>
+  </mat-card>
+} @else if (tournaments().length === 0) {
+  <mat-card appearance="outlined" class="state-card">
+    <mat-icon>emoji_events</mat-icon>
+    <p>Todavía no hay torneos. Crea el primero y elige a sus jugadores.</p>
+    <a mat-flat-button routerLink="/torneos/nuevo">Crear torneo</a>
+  </mat-card>
+} @else {
+  <section class="grid">
+    @for (tournament of tournaments(); track tournament.id) {
+      <a class="tournament-link" [routerLink]="['/torneos', tournament.id]">
+        <mat-card appearance="outlined" class="tournament">
+          <div class="top">
+            <span class="status" [class.generated]="tournament.status === 'GENERADO'">
+              {{ tournament.status === 'GENERADO' ? 'Cuadro generado' : 'Preparación' }}
+            </span>
+            <span class="date">{{ tournament.created_at | date: 'dd/MM/yyyy' }}</span>
+          </div>
+
+          <h2 class="name">{{ tournament.name }}</h2>
+
+          <div class="logos" aria-hidden="true">
+            @for (logo of tournament.logos.slice(0, maxLogos); track $index) {
+              <span class="logo">{{ logo }}</span>
+            }
+            @if (tournament.logos.length > maxLogos) {
+              <span class="logo more">+{{ tournament.logos.length - maxLogos }}</span>
+            }
+          </div>
+
+          <div class="stats">
+            <span><strong>{{ tournament.participant_count }}</strong> jugadores</span>
+            <span><strong>{{ tournament.total_rounds }}</strong> rondas</span>
+            <span><strong>{{ tournament.bye_count }}</strong> BYE</span>
+          </div>
+        </mat-card>
+      </a>
+    }
+  </section>
+}

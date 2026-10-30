@@ -1,0 +1,161 @@
+<a mat-button [routerLink]="isEdit ? ['/torneos', id()] : '/torneos'" class="back">
+  <mat-icon>arrow_back</mat-icon>
+  {{ isEdit ? 'Volver al torneo' : 'Volver a torneos' }}
+</a>
+
+<h1>{{ isEdit ? 'Editar torneo' : 'Nuevo torneo' }}</h1>
+
+<ol class="stepper" aria-label="Pasos">
+  @for (item of steps; track item.number) {
+    <li>
+      <button
+        type="button"
+        class="step-pill"
+        [class.current]="step() === item.number"
+        [class.done]="step() > item.number"
+        [disabled]="!canGoTo(item.number)"
+        [attr.aria-current]="step() === item.number ? 'step' : null"
+        (click)="goTo(item.number)"
+      >
+        <span class="step-number">{{ item.number }}</span>
+        {{ item.label }}
+      </button>
+    </li>
+  }
+</ol>
+
+<mat-card appearance="outlined" class="panel">
+  @if (loading() || saving()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (loadError(); as message) {
+    <p class="load-error"><mat-icon>error</mat-icon> {{ message }}</p>
+  } @else if (!loading()) {
+    @switch (step()) {
+      @case (1) {
+        <section class="step">
+          <p class="step-title">Paso 1/3 · ¿Cómo se llama el torneo?</p>
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Nombre del torneo</mat-label>
+            <input
+              matInput
+              [formControl]="name"
+              maxlength="80"
+              autocomplete="off"
+              placeholder="Copa Halloween"
+              (keydown.enter)="goTo(2)"
+            />
+            <mat-hint align="end">{{ name.value.length }}/80</mat-hint>
+            @if (name.hasError('required')) {
+              <mat-error>El nombre es obligatorio</mat-error>
+            } @else if (name.hasError('minlength')) {
+              <mat-error>Mínimo 3 caracteres</mat-error>
+            }
+          </mat-form-field>
+        </section>
+      }
+
+      @case (2) {
+        <section class="step">
+          <div class="select-header">
+            <p class="step-title">Paso 2/3 · Select your players</p>
+            <div class="select-actions">
+              <button mat-button type="button" (click)="selectAll()">Todos</button>
+              <button mat-button type="button" (click)="selectNone()">Ninguno</button>
+            </div>
+          </div>
+
+          @if (available().length < 2) {
+            <p class="hint">
+              Hacen falta al menos 2 participantes activos.
+              <a routerLink="/participantes">Ir a participantes</a>
+            </p>
+          }
+
+          <div class="roster" role="group" aria-label="Participantes activos">
+            @for (participant of available(); track participant.id) {
+              <button
+                type="button"
+                class="player"
+                [class.picked]="selectedIds().has(participant.id)"
+                [attr.aria-pressed]="selectedIds().has(participant.id)"
+                (click)="toggle(participant)"
+              >
+                <span class="player-logo" aria-hidden="true">{{ participant.logo }}</span>
+                <span class="player-nick">{{ participant.nick }}</span>
+                @if (selectedIds().has(participant.id)) {
+                  <span class="check" aria-hidden="true">✔</span>
+                }
+              </button>
+            }
+          </div>
+
+          <p class="counter" [class.warn]="count() < 2">
+            {{ count() }} seleccionados
+            @if (count() < 2) {
+              · elige al menos 2
+            }
+          </p>
+        </section>
+      }
+
+      @case (3) {
+        <section class="step">
+          <p class="step-title">Paso 3/3 · Ready?</p>
+          <div class="summary">
+            <h2 class="summary-name">{{ trimmedName() }}</h2>
+            <div class="summary-logos" aria-hidden="true">
+              @for (participant of selected(); track participant.id) {
+                <span>{{ participant.logo }}</span>
+              }
+            </div>
+            <dl class="summary-stats">
+              <div><dt>Jugadores</dt><dd>{{ count() }}</dd></div>
+              <div><dt>Rondas</dt><dd>{{ rounds() }}</dd></div>
+              <div><dt>Combates 1ª ronda</dt><dd>{{ firstRoundMatches() }}</dd></div>
+              <div><dt>BYE</dt><dd>{{ byes() }}</dd></div>
+            </dl>
+            @if (byes() > 0) {
+              <p class="bye-note">
+                Como {{ count() }} no es potencia de 2, {{ byes() }}
+                {{ byes() === 1 ? 'jugador pasará' : 'jugadores pasarán' }} directamente a la
+                segunda ronda (BYE). Se decide en el sorteo.
+              </p>
+            }
+            <p class="bye-note">
+              El torneo quedará en <strong>Preparación</strong>. El cuadro se sortea después, desde
+              la página del torneo.
+            </p>
+          </div>
+        </section>
+      }
+    }
+
+    <div class="nav">
+      @if (step() > 1) {
+        <button mat-stroked-button type="button" (click)="goTo($any(step() - 1))">
+          <mat-icon>chevron_left</mat-icon>
+          Atrás
+        </button>
+      }
+      <span class="spacer"></span>
+      @if (step() < 3) {
+        <button
+          mat-flat-button
+          type="button"
+          [disabled]="step() === 2 && count() < 2"
+          (click)="goTo($any(step() + 1))"
+        >
+          Siguiente
+          <mat-icon iconPositionEnd>chevron_right</mat-icon>
+        </button>
+      } @else {
+        <button mat-flat-button type="button" [disabled]="saving()" (click)="save()">
+          <mat-icon>{{ isEdit ? 'save' : 'emoji_events' }}</mat-icon>
+          {{ isEdit ? 'Guardar cambios' : 'Crear torneo' }}
+        </button>
+      }
+    </div>
+  }
+</mat-card>

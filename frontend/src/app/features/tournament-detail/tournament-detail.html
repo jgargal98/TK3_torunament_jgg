@@ -1,0 +1,101 @@
+<a mat-button routerLink="/torneos" class="back">
+  <mat-icon>arrow_back</mat-icon>
+  Volver a torneos
+</a>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+} @else if (error(); as message) {
+  <mat-card appearance="outlined" class="state-card error">
+    <mat-icon>cloud_off</mat-icon>
+    <p>{{ message }}</p>
+    <button mat-stroked-button (click)="load()">
+      <mat-icon>refresh</mat-icon>
+      Reintentar
+    </button>
+  </mat-card>
+} @else if (tournament(); as tournament) {
+  <header class="header">
+    <div class="title-block">
+      <span class="status" [class.generated]="!isPreparation()">
+        {{ isPreparation() ? 'Preparación' : 'Cuadro generado' }}
+      </span>
+      <h1>{{ tournament.name }}</h1>
+      <p class="meta">
+        {{ tournament.participant_count }} jugadores · {{ tournament.total_rounds }} rondas ·
+        {{ tournament.bye_count }} BYE · creado el {{ tournament.created_at | date: 'dd/MM/yyyy' }}
+      </p>
+    </div>
+
+    @if (isPreparation()) {
+      <div class="actions">
+        <a mat-stroked-button [routerLink]="['/torneos', tournament.id, 'editar']" [class.disabled]="busy()">
+          <mat-icon>edit</mat-icon>
+          Editar
+        </a>
+        <button mat-stroked-button class="danger" [disabled]="busy()" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon>
+          Eliminar
+        </button>
+      </div>
+    }
+  </header>
+
+  <section class="players" aria-label="Jugadores inscritos">
+    @for (player of tournament.participants; track player.id) {
+      <span class="player" [class.inactive]="!player.active" [title]="player.nick">
+        <span aria-hidden="true">{{ player.logo }}</span>
+        {{ player.nick }}
+      </span>
+    }
+  </section>
+
+  @if (isPreparation()) {
+    @if (drawing()) {
+      <mat-card appearance="outlined" class="draw" aria-live="polite">
+        <p class="draw-title">Sorteando...</p>
+        <div class="reels" aria-hidden="true">
+          @for (logo of reels(); track $index) {
+            <span class="reel">{{ logo }}</span>
+          }
+        </div>
+      </mat-card>
+    } @else {
+      <mat-card appearance="outlined" class="draw">
+        <p class="draw-title">¿Todo listo?</p>
+        <p class="draw-text">
+          El sorteo empareja a los jugadores al azar.
+          @if (tournament.bye_count > 0) {
+            {{ tournament.bye_count }} {{ tournament.bye_count === 1 ? 'jugador pasará' : 'jugadores pasarán' }}
+            directamente a la segunda ronda (BYE).
+          }
+          Después ya no se podrán cambiar los jugadores.
+        </p>
+        @if (inactivePlayers().length > 0) {
+          <p class="warning">
+            <mat-icon>warning</mat-icon>
+            Hay jugadores desactivados en el torneo. Edítalo o vuelve a activarlos antes del sorteo.
+          </p>
+        }
+        <button
+          mat-flat-button
+          class="draw-button"
+          [disabled]="busy() || inactivePlayers().length > 0"
+          (click)="generateBracket()"
+        >
+          <mat-icon>casino</mat-icon>
+          Generar cuadro
+        </button>
+      </mat-card>
+    }
+  } @else {
+    <section class="bracket-section">
+      <h2>Cuadro</h2>
+      <app-bracket [rounds]="rounds()" />
+      <p class="legend">
+        <span class="legend-item"><span class="swatch advanced"></span> Pasa por BYE</span>
+        <span class="legend-item"><span class="swatch future"></span> Por decidir (fase 3)</span>
+      </p>
+    </section>
+  }
+}

@@ -1,0 +1,239 @@
+.back {
+  margin-bottom: 12px;
+}
+
+h1 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  text-shadow: 3px 3px 0 var(--arcade-cyan);
+}
+
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 8px 8px;
+  font-family: var(--arcade-font);
+  font-size: 9px;
+  color: var(--arcade-ink);
+  background: var(--arcade-paper);
+  border: 2px solid var(--arcade-ink);
+  cursor: pointer;
+}
+
+.step-pill:disabled {
+  cursor: not-allowed;
+  color: var(--arcade-muted-ink);
+  border-color: var(--arcade-muted-ink);
+}
+
+.step-pill.current {
+  background: var(--arcade-yellow);
+  box-shadow: 3px 3px 0 var(--arcade-ink);
+}
+
+.step-pill.done {
+  background: var(--arcade-lime);
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  background: var(--arcade-ink);
+  color: var(--arcade-paper);
+}
+
+.panel {
+  padding: 24px;
+}
+
+.step-title {
+  margin: 0 0 20px;
+  font-family: var(--arcade-font);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.full {
+  width: 100%;
+}
+
+.select-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.select-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* "Character select" grid. */
+.roster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 14px;
+}
+
+.player {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 8px;
+  font: inherit;
+  color: var(--arcade-ink);
+  background: var(--arcade-paper);
+  border: 3px solid var(--arcade-ink);
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s, background 0.08s;
+}
+
+.player:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--arcade-ink);
+}
+
+.player.picked {
+  background: var(--arcade-pink);
+  box-shadow: 4px 4px 0 var(--arcade-ink);
+  transform: translate(-2px, -2px);
+}
+
+.player:focus-visible {
+  outline: 3px solid var(--arcade-cyan);
+  outline-offset: 2px;
+}
+
+.player-logo {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  font-size: 30px;
+  background: var(--arcade-cream);
+  border: 2px solid var(--arcade-ink);
+}
+
+.player-nick {
+  max-width: 100%;
+  font-family: var(--arcade-font);
+  font-size: 8px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: 13px;
+  background: var(--arcade-lime);
+  border: 2px solid var(--arcade-ink);
+}
+
+.counter {
+  margin: 20px 0 0;
+  font-family: var(--arcade-font);
+  font-size: 10px;
+}
+
+.counter.warn {
+  color: #c2185b;
+}
+
+.hint {
+  font-weight: 700;
+}
+
+.summary {
+  padding: 20px;
+  background: var(--arcade-ink);
+  color: var(--arcade-paper);
+  border: var(--arcade-border);
+}
+
+.summary-name {
+  margin: 0 0 14px;
+  font-size: 14px;
+  color: var(--arcade-yellow);
+  word-break: break-word;
+}
+
+.summary-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+  font-size: 24px;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.summary-stats div {
+  padding: 10px;
+  border: 2px solid var(--arcade-paper);
+}
+
+.summary-stats dt {
+  font-size: 12px;
+  color: var(--arcade-muted-bg);
+}
+
+.summary-stats dd {
+  margin: 6px 0 0;
+  font-family: var(--arcade-font);
+  font-size: 18px;
+  color: var(--arcade-cyan);
+}
+
+.bye-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.load-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #c2185b;
+}

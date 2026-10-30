@@ -10,7 +10,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 
 import { ParticipantInput } from '../../core/models';
-import { ParticipantApi, errorMessage } from '../../core/participant-api';
+import { errorMessage } from '../../core/api';
+import { ParticipantApi } from '../../core/participant-api';
 
 /** Emojis offered as logos. The user can also type any other emoji. */
 export const LOGO_OPTIONS = [

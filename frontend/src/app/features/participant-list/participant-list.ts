@@ -13,7 +13,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 
 import { Participant, ParticipantFilter } from '../../core/models';
-import { ParticipantApi, errorMessage } from '../../core/participant-api';
+import { errorMessage } from '../../core/api';
+import { ParticipantApi } from '../../core/participant-api';
 
 @Component({
   selector: 'app-participant-list',

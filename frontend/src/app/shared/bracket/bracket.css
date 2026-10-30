@@ -1,0 +1,146 @@
+:host {
+  --gap: 44px;
+  --line: 3px solid var(--arcade-ink);
+  display: block;
+  overflow-x: auto;
+  padding: 4px 8px 16px 4px;
+}
+
+.bracket {
+  display: flex;
+  width: max-content;
+}
+
+.round {
+  display: flex;
+  flex-direction: column;
+  width: 210px;
+  margin-right: var(--gap);
+}
+
+.round.last {
+  margin-right: 0;
+}
+
+.round-name {
+  margin: 0 0 12px;
+  padding: 8px;
+  font-size: 9px;
+  text-align: center;
+  background: var(--arcade-ink);
+  color: var(--arcade-yellow);
+}
+
+.matches {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+/* Each slot takes the same share of the column, so in the next column (half the
+   matches) every match is centred between the two that feed it. */
+.slot {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  padding: 10px 0;
+}
+
+/* Lines leaving a pair of matches: ┐ from the top one and ┘ from the bottom one. */
+.round:not(.last) .slot::after {
+  content: '';
+  position: absolute;
+  right: calc(var(--gap) / -2);
+  width: calc(var(--gap) / 2);
+  height: 50%;
+  border-right: var(--line);
+}
+
+.round:not(.last) .slot:nth-child(odd)::after {
+  top: 50%;
+  border-top: var(--line);
+}
+
+.round:not(.last) .slot:nth-child(even)::after {
+  bottom: 50%;
+  border-bottom: var(--line);
+}
+
+/* Line entering a match from the previous round. */
+.round:not(:first-child) .slot::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--gap) / -2);
+  top: 50%;
+  width: calc(var(--gap) / 2);
+  border-top: var(--line);
+}
+
+.match {
+  width: 100%;
+  background: var(--arcade-paper);
+  border: var(--line);
+  box-shadow: 4px 4px 0 var(--arcade-ink);
+}
+
+.match.future {
+  background: var(--arcade-cream);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 8px;
+}
+
+.logo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-size: 17px;
+  background: var(--arcade-cream);
+  border: 2px solid var(--arcade-ink);
+}
+
+.nick {
+  min-width: 0;
+  font-family: var(--arcade-font);
+  font-size: 8px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vs {
+  padding: 2px 8px;
+  font-family: var(--arcade-font);
+  font-size: 7px;
+  color: var(--arcade-pink);
+  border-top: 2px dashed var(--arcade-muted-bg);
+  border-bottom: 2px dashed var(--arcade-muted-bg);
+}
+
+.match.bye .vs {
+  color: var(--arcade-muted-ink);
+}
+
+.bye-row,
+.empty {
+  justify-content: center;
+  font-family: var(--arcade-font);
+  font-size: 8px;
+  color: var(--arcade-muted-ink);
+}
+
+/* Player who went straight to this round thanks to a BYE. */
+.row.advanced {
+  background: var(--arcade-lime);
+}
