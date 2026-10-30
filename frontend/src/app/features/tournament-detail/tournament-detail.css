@@ -128,7 +128,7 @@ h1 {
   width: 76px;
   height: 76px;
   font-size: 44px;
-  background: var(--arcade-ink);
+  background: var(--arcade-night);
   border: 3px solid var(--arcade-ink);
   box-shadow: 4px 4px 0 var(--arcade-pink);
   animation: shake 0.18s infinite alternate;

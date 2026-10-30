@@ -33,7 +33,7 @@ mat-card-content {
   gap: 16px;
   padding: 16px;
   margin-bottom: 24px;
-  background: var(--arcade-ink);
+  background: var(--arcade-night);
   border: var(--arcade-border);
 }
 

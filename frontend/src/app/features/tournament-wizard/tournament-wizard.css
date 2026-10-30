@@ -169,7 +169,7 @@ h1 {
 
 .summary {
   padding: 20px;
-  background: var(--arcade-ink);
+  background: var(--arcade-night);
   color: var(--arcade-paper);
   border: var(--arcade-border);
 }
@@ -198,7 +198,7 @@ h1 {
 
 .summary-stats div {
   padding: 10px;
-  border: 2px solid var(--arcade-paper);
+  border: 2px solid var(--arcade-violet);
 }
 
 .summary-stats dt {

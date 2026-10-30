@@ -10,6 +10,9 @@
   --arcade-violet: #b69cff;
   --arcade-muted-bg: #e5ddc5;
   --arcade-muted-ink: #8a8270;
+  /* Dark "game screen" panels (summary, preview, draw): purple instead of black so
+     they read as intentional and make the yellow and cyan pop. */
+  --arcade-night: #2a1a5e;
 
   --arcade-border: 3px solid var(--arcade-ink);
   --arcade-shadow: 5px 5px 0 var(--arcade-ink);
