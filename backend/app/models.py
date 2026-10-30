@@ -21,8 +21,10 @@ MYSQL_TABLE_ARGS = {"mysql_charset": "utf8mb4", "mysql_collate": "utf8mb4_unicod
 
 
 class TournamentStatus:
-    PREPARATION = "PREPARACION"
-    BRACKET_GENERATED = "GENERADO"
+    PREPARATION = "PREPARACION"  # players can still change
+    BRACKET_GENERATED = "GENERADO"  # draw done, no results yet
+    IN_PROGRESS = "EN_CURSO"  # at least one match played
+    FINISHED = "FINALIZADO"  # there is a champion: no more changes
 
 
 class Participant(Base):
@@ -59,10 +61,13 @@ class Tournament(Base):
     status: Mapped[str] = mapped_column(String(20), default=TournamentStatus.PREPARATION)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     bracket_generated_at: Mapped[datetime | None] = mapped_column(DateTime)
+    champion_id: Mapped[int | None] = mapped_column(ForeignKey("participants.id"))
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime)
 
     participants: Mapped[list[Participant]] = relationship(
         secondary=tournament_participants, order_by=Participant.nick
     )
+    champion: Mapped[Participant | None] = relationship(foreign_keys=[champion_id])
     matches: Mapped[list["Match"]] = relationship(
         back_populates="tournament",
         order_by="[Match.round, Match.position]",

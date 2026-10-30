@@ -72,18 +72,27 @@ class Match(BaseModel):
     participant2: ParticipantSummary | None
     winner_id: int | None
     is_bye: bool
+    resolved_at: datetime | None
+
+
+class WinnerInput(BaseModel):
+    winner_id: int
 
 
 class TournamentSummary(BaseModel):
     id: int
     name: str
-    status: str  # PREPARACION | GENERADO
+    status: str  # PREPARACION | GENERADO | EN_CURSO | FINALIZADO
     created_at: datetime
     bracket_generated_at: datetime | None
+    finished_at: datetime | None
     participant_count: int
     total_rounds: int
     bye_count: int
+    current_round: int | None
+    pending_matches: int
     logos: list[str]
+    champion: ParticipantSummary | None
 
 
 class TournamentDetail(TournamentSummary):

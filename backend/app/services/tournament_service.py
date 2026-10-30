@@ -1,4 +1,5 @@
-"""Tournament rules: participant selection and the random KO bracket with BYEs."""
+"""Tournament rules: participant selection, random KO bracket with BYEs, results,
+round advance and champion."""
 
 import random
 from datetime import datetime
@@ -131,14 +132,73 @@ class TournamentService:
 
         tournament.status = TournamentStatus.BRACKET_GENERATED
         tournament.bracket_generated_at = now
+        self.session.flush()
+        self._advance_if_round_complete(tournament)
         self.session.commit()
         return self.to_detail(tournament)
+
+    # ---------- Results ----------
+
+    def set_winner(self, match_id: int, winner_id: int) -> schemas.TournamentDetail:
+        """Stores the winner of a match. When the round is complete the next one is created
+        automatically and, after the final, the tournament is closed with its champion."""
+        match = self.repository.get_match(match_id)
+        if match is None:
+            raise NotFoundError(f"No existe el combate {match_id}")
+        tournament = match.tournament
+
+        if tournament.status == TournamentStatus.FINISHED:
+            raise RuleError("El torneo ha finalizado y no admite más cambios", 409)
+        if tournament.status == TournamentStatus.PREPARATION:
+            raise RuleError("Primero hay que generar el cuadro del torneo", 409)
+        if match.is_bye:
+            raise RuleError("Un pase BYE no necesita resultado", 409)
+        if match.winner_id is not None:
+            raise RuleError("Este combate ya está resuelto", 409)
+        if winner_id not in (match.participant1_id, match.participant2_id):
+            raise RuleError("El ganador debe ser uno de los participantes del combate")
+
+        match.winner = match.participant1 if winner_id == match.participant1_id else match.participant2
+        match.resolved_at = datetime.now()
+        tournament.status = TournamentStatus.IN_PROGRESS
+        self.session.flush()
+        self._advance_if_round_complete(tournament)
+        self.session.commit()
+        return self.to_detail(tournament)
+
+    def _advance_if_round_complete(self, tournament: Tournament) -> None:
+        """If every match of the last round has a winner: after the final, closes the
+        tournament; otherwise pairs the winners in bracket order (2k vs 2k+1)."""
+        current = max(match.round for match in tournament.matches)
+        round_matches = sorted(
+            (match for match in tournament.matches if match.round == current),
+            key=lambda match: match.position,
+        )
+        if any(match.winner_id is None for match in round_matches):
+            return
+
+        if len(round_matches) == 1:
+            tournament.champion = round_matches[0].winner
+            tournament.status = TournamentStatus.FINISHED
+            tournament.finished_at = datetime.now()
+            return
+
+        for position in range(len(round_matches) // 2):
+            tournament.matches.append(
+                Match(
+                    round=current + 1,
+                    position=position,
+                    participant1=round_matches[2 * position].winner,
+                    participant2=round_matches[2 * position + 1].winner,
+                )
+            )
+        self.session.flush()
 
     @staticmethod
     def _ensure_preparation(tournament: Tournament, action: str) -> None:
         if tournament.status != TournamentStatus.PREPARATION:
             raise RuleError(
-                f"No se puede {action} un torneo con el cuadro ya generado",
+                f"No se puede {action} un torneo que ya no está en preparación",
                 409,
             )
 
@@ -163,10 +223,14 @@ class TournamentService:
             "status": tournament.status,
             "created_at": tournament.created_at,
             "bracket_generated_at": tournament.bracket_generated_at,
+            "finished_at": tournament.finished_at,
             "participant_count": count,
             "total_rounds": total_rounds(count),
             "bye_count": bracket_size(count) - count,
+            "current_round": max((match.round for match in tournament.matches), default=None),
+            "pending_matches": sum(1 for match in tournament.matches if match.winner_id is None),
             "logos": [participant.logo for participant in tournament.participants],
+            "champion": _summary(tournament.champion),
         }
 
 
@@ -183,4 +247,5 @@ def _match(match: Match) -> schemas.Match:
         participant2=_summary(match.participant2),
         winner_id=match.winner_id,
         is_bye=match.is_bye,
+        resolved_at=match.resolved_at,
     )

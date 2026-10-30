@@ -3,7 +3,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from app.models import Participant, Tournament
+from app.models import Match, Participant, Tournament
 
 
 class ParticipantRepository:
@@ -39,7 +39,11 @@ class TournamentRepository:
     def list_all(self) -> list[Tournament]:
         query = (
             select(Tournament)
-            .options(selectinload(Tournament.participants))
+            .options(
+                selectinload(Tournament.participants),
+                selectinload(Tournament.matches),
+                selectinload(Tournament.champion),
+            )
             .order_by(Tournament.created_at.desc(), Tournament.id.desc())
         )
         return list(self.session.scalars(query))
@@ -54,3 +58,6 @@ class TournamentRepository:
 
     def delete(self, tournament: Tournament) -> None:
         self.session.delete(tournament)
+
+    def get_match(self, match_id: int) -> Match | None:
+        return self.session.get(Match, match_id)
