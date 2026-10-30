@@ -1,1 +1,165 @@
-/* You can add global styles to this file, and also import other style files */
+/* ---------- Retro arcade palette ---------- */
+:root {
+  --arcade-ink: #1a1a1a;
+  --arcade-cream: #fff4d6;
+  --arcade-paper: #fffdf5;
+  --arcade-pink: #ff5c8a;
+  --arcade-yellow: #ffd23f;
+  --arcade-cyan: #3dd6d0;
+  --arcade-lime: #a6e22e;
+  --arcade-violet: #b69cff;
+  --arcade-muted-bg: #e5ddc5;
+  --arcade-muted-ink: #8a8270;
+
+  --arcade-border: 3px solid var(--arcade-ink);
+  --arcade-shadow: 5px 5px 0 var(--arcade-ink);
+  --arcade-font: 'Press Start 2P', monospace;
+}
+
+body {
+  /* Faint pixel grid in the background. */
+  background-image:
+    linear-gradient(rgb(26 26 26 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(26 26 26 / 5%) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--arcade-font);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* ---------- Material components, arcade style ---------- */
+.mat-mdc-card.mat-mdc-card {
+  background: var(--arcade-paper);
+  border: var(--arcade-border);
+  box-shadow: var(--arcade-shadow);
+}
+
+/* Chunky buttons that "press down" when clicked. */
+.mat-mdc-unelevated-button.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button.mat-mdc-outlined-button {
+  font-family: var(--arcade-font);
+  font-size: 11px;
+  letter-spacing: 0;
+  height: 44px;
+  padding: 0 18px;
+  color: var(--arcade-ink);
+  border: var(--arcade-border);
+  box-shadow: 4px 4px 0 var(--arcade-ink);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.mat-mdc-unelevated-button.mat-mdc-unelevated-button:not(:disabled) {
+  background: var(--arcade-pink);
+}
+
+.mat-mdc-outlined-button.mat-mdc-outlined-button:not(:disabled) {
+  background: var(--arcade-paper);
+}
+
+.mat-mdc-unelevated-button:not(:disabled):active,
+.mat-mdc-outlined-button:not(:disabled):active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--arcade-ink);
+}
+
+.mat-mdc-unelevated-button:disabled {
+  background: var(--arcade-muted-bg);
+  color: var(--arcade-muted-ink);
+  border-color: var(--arcade-muted-ink);
+  box-shadow: none;
+}
+
+.mat-mdc-button.mat-mdc-button {
+  font-family: var(--arcade-font);
+  font-size: 10px;
+  color: var(--arcade-ink);
+}
+
+/* Form fields with a thick ink outline. */
+.mat-mdc-form-field {
+  --mat-form-field-outlined-outline-color: var(--arcade-ink);
+  --mat-form-field-outlined-hover-outline-color: var(--arcade-ink);
+  --mat-form-field-outlined-focus-outline-color: var(--arcade-pink);
+  --mat-form-field-outlined-outline-width: 2px;
+  --mat-form-field-outlined-focus-outline-width: 3px;
+}
+
+.mat-mdc-text-field-wrapper {
+  background: var(--arcade-paper);
+}
+
+/* Button toggle group used as a filter. */
+.mat-button-toggle-group.mat-button-toggle-group-appearance-standard {
+  --mat-button-toggle-selected-state-background-color: var(--arcade-yellow);
+  --mat-button-toggle-selected-state-text-color: var(--arcade-ink);
+  --mat-button-toggle-divider-color: var(--arcade-ink);
+  border: var(--arcade-border);
+  box-shadow: 4px 4px 0 var(--arcade-ink);
+  background: var(--arcade-paper);
+}
+
+.mat-button-toggle {
+  font-family: var(--arcade-font);
+  font-size: 10px;
+}
+
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  background: var(--arcade-yellow);
+  color: var(--arcade-ink);
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+  background: var(--arcade-ink);
+  border: 3px solid var(--arcade-yellow);
+  box-shadow: 4px 4px 0 var(--arcade-yellow);
+  font-family: var(--arcade-font);
+  font-size: 10px;
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-button.mat-mdc-snack-bar-action {
+  color: var(--arcade-yellow);
+}
+
+.mat-mdc-progress-bar {
+  --mat-progress-bar-active-indicator-color: var(--arcade-pink);
+  --mat-progress-bar-track-color: var(--arcade-muted-bg);
+  --mat-progress-bar-track-height: 8px;
+  --mat-progress-bar-active-indicator-height: 8px;
+  border: 2px solid var(--arcade-ink);
+}
+
+.mat-mdc-tooltip {
+  --mat-tooltip-container-color: var(--arcade-ink);
+  --mat-tooltip-supporting-text-font: var(--arcade-font);
+  --mat-tooltip-supporting-text-size: 9px;
+}
+
+/* Small pixel-font badge, used for states like ACTIVO / INACTIVO. */
+.arcade-badge {
+  display: inline-block;
+  padding: 5px 7px;
+  font-family: var(--arcade-font);
+  font-size: 8px;
+  line-height: 1;
+  border: 2px solid var(--arcade-ink);
+  background: var(--arcade-ink);
+  color: var(--arcade-lime);
+}
+
+.arcade-badge.off {
+  background: var(--arcade-muted-bg);
+  color: var(--arcade-muted-ink);
+  border-color: var(--arcade-muted-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

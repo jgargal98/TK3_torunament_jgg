@@ -23,7 +23,10 @@
       <mat-card-content>
         <div class="preview" aria-hidden="true">
           <div class="preview-logo">{{ form.controls.logo.value || '?' }}</div>
-          <div class="preview-nick">{{ form.controls.nick.value || 'Tu nick' }}</div>
+          <div class="preview-text">
+            <div class="preview-label">{{ isEdit ? 'Player edit' : 'New player' }}</div>
+            <div class="preview-nick">{{ form.controls.nick.value || 'Tu nick' }}</div>
+          </div>
         </div>
 
         <mat-form-field appearance="outline" class="full">

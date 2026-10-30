@@ -4,17 +4,20 @@
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 h1 {
   margin: 0;
-  font: var(--mat-sys-headline-medium);
+  font-size: 22px;
+  color: var(--arcade-ink);
+  text-shadow: 3px 3px 0 var(--arcade-pink);
 }
 
 .subtitle {
-  margin: 4px 0 0;
-  color: var(--mat-sys-on-surface-variant);
+  margin: 10px 0 0;
+  font-weight: 700;
+  color: var(--arcade-muted-ink);
 }
 
 .toolbar {
@@ -22,7 +25,7 @@ h1 {
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .search {
@@ -32,35 +35,62 @@ h1 {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 24px;
 }
 
+/* Each active participant gets one of the arcade colors, like player slots. */
 .participant {
+  --slot-color: var(--arcade-pink);
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
-  transition: opacity 0.2s, filter 0.2s;
+  gap: 14px;
+  padding: 14px;
+  transition: transform 0.12s, box-shadow 0.12s;
 }
 
-/* Inactive participants stay visible but faded, so both states are easy to tell apart. */
-.participant.inactive {
-  opacity: 0.6;
-  filter: grayscale(0.8);
+.participant[data-color='1'] { --slot-color: var(--arcade-yellow); }
+.participant[data-color='2'] { --slot-color: var(--arcade-cyan); }
+.participant[data-color='3'] { --slot-color: var(--arcade-lime); }
+.participant[data-color='4'] { --slot-color: var(--arcade-violet); }
+
+.participant.mat-mdc-card {
+  background: var(--slot-color);
+}
+
+.participant:not(.inactive):hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--arcade-ink);
+}
+
+/* Inactive participants stay visible but "switched off": grey, dashed and without shadow. */
+.participant.inactive.mat-mdc-card {
+  background: var(--arcade-muted-bg);
   border-style: dashed;
+  border-color: var(--arcade-muted-ink);
+  box-shadow: none;
+}
+
+.participant.inactive .logo {
+  filter: grayscale(1);
+  opacity: 0.5;
+  border-color: var(--arcade-muted-ink);
+}
+
+.participant.inactive .nick {
+  color: var(--arcade-muted-ink);
 }
 
 .logo {
   flex: none;
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  font-size: 36px;
-  background: var(--mat-sys-surface-container-high);
+  width: 60px;
+  height: 60px;
+  font-size: 32px;
+  background: var(--arcade-paper);
+  border: var(--arcade-border);
 }
 
 .info {
@@ -69,8 +99,9 @@ h1 {
 }
 
 .nick {
-  margin: 0 0 6px;
-  font: var(--mat-sys-title-medium);
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--arcade-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -83,35 +114,26 @@ h1 {
   gap: 4px;
 }
 
-.chip-active {
-  --mat-chip-elevated-container-color: #d7f5dd;
-  --mat-chip-label-text-color: #1b5e20;
-  --mat-chip-with-avatar-avatar-color: #1b5e20;
-  --mat-chip-with-icon-icon-color: #1b5e20;
-}
-
-.chip-inactive {
-  --mat-chip-elevated-container-color: var(--mat-sys-surface-container-highest);
-  --mat-chip-label-text-color: var(--mat-sys-on-surface-variant);
-  --mat-chip-with-icon-icon-color: var(--mat-sys-on-surface-variant);
+.actions a {
+  color: var(--arcade-ink);
 }
 
 .state-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 32px 16px;
+  gap: 12px;
+  padding: 40px 16px;
   text-align: center;
+  font-weight: 700;
 }
 
 .state-card mat-icon {
   font-size: 40px;
   width: 40px;
   height: 40px;
-  color: var(--mat-sys-on-surface-variant);
 }
 
-.state-card.error mat-icon {
-  color: var(--mat-sys-error);
+.state-card.error.mat-mdc-card {
+  background: #ffd6de;
 }

@@ -1,5 +1,5 @@
 .back {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .card {
@@ -7,18 +7,34 @@
   margin: 0 auto;
 }
 
+mat-card-header {
+  padding: 20px 20px 0;
+}
+
+.card mat-card-title {
+  font-family: var(--arcade-font);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.card mat-card-subtitle {
+  font-weight: 700;
+  color: var(--arcade-muted-ink);
+}
+
 mat-card-content {
   padding-top: 16px;
 }
 
+/* Live preview, styled like a "player ready" screen. */
 .preview {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 16px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  background: var(--mat-sys-surface-container);
+  margin-bottom: 24px;
+  background: var(--arcade-ink);
+  border: var(--arcade-border);
 }
 
 .preview-logo {
@@ -26,15 +42,29 @@ mat-card-content {
   place-items: center;
   width: 72px;
   height: 72px;
-  border-radius: 50%;
   font-size: 40px;
-  background: var(--mat-sys-surface-container-highest);
+  background: var(--arcade-paper);
+  border: 3px solid var(--arcade-yellow);
+}
+
+.preview-text {
+  min-width: 0;
+}
+
+.preview-label {
+  margin-bottom: 10px;
+  font-family: var(--arcade-font);
+  font-size: 9px;
+  color: var(--arcade-yellow);
 }
 
 .preview-nick {
-  font: var(--mat-sys-title-large);
+  font-family: var(--arcade-font);
+  font-size: 14px;
+  color: var(--arcade-paper);
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .full,
@@ -43,45 +73,53 @@ mat-card-content {
 }
 
 .label {
-  margin: 8px 0;
-  font: var(--mat-sys-title-small);
-  color: var(--mat-sys-on-surface-variant);
+  margin: 8px 0 12px;
+  font-family: var(--arcade-font);
+  font-size: 10px;
 }
 
 .emoji-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
-  gap: 8px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
 .emoji {
   aspect-ratio: 1;
-  font-size: 26px;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  background: var(--mat-sys-surface-container);
+  font-size: 24px;
+  border: 2px solid var(--arcade-ink);
+  background: var(--arcade-paper);
   cursor: pointer;
-  transition: transform 0.1s, border-color 0.1s;
+  transition: transform 0.08s, box-shadow 0.08s;
 }
 
 .emoji:hover {
-  transform: scale(1.08);
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--arcade-ink);
 }
 
 .emoji.selected {
-  border-color: var(--mat-sys-primary);
-  background: var(--mat-sys-primary-container);
+  background: var(--arcade-pink);
+  border-width: 3px;
+  box-shadow: 3px 3px 0 var(--arcade-ink);
+  transform: translate(-2px, -2px);
 }
 
 .emoji:focus-visible {
-  outline: 2px solid var(--mat-sys-primary);
+  outline: 3px solid var(--arcade-cyan);
   outline-offset: 2px;
+}
+
+mat-card-actions {
+  gap: 12px;
+  padding: 8px 20px 20px;
 }
 
 .load-error {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--mat-sys-error);
+  font-weight: 700;
+  color: #c2185b;
 }
