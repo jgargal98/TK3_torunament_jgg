@@ -1,0 +1,90 @@
+<header class="page-header">
+  <div>
+    <h1>Participantes</h1>
+    <p class="subtitle">
+      {{ participants().length }} registrados · {{ activeCount() }} activos ·
+      {{ inactiveCount() }} inactivos
+    </p>
+  </div>
+  <a mat-flat-button routerLink="/participantes/nuevo">
+    <mat-icon>person_add</mat-icon>
+    Nuevo participante
+  </a>
+</header>
+
+<div class="toolbar">
+  <mat-button-toggle-group
+    [value]="filter()"
+    (change)="filter.set($event.value)"
+    aria-label="Filtrar por estado"
+  >
+    <mat-button-toggle value="all">Todos</mat-button-toggle>
+    <mat-button-toggle value="active">Activos</mat-button-toggle>
+    <mat-button-toggle value="inactive">Inactivos</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search">
+    <mat-icon matPrefix>search</mat-icon>
+    <mat-label>Buscar por nick</mat-label>
+    <input matInput [ngModel]="search()" (ngModelChange)="search.set($event)" />
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+} @else if (error(); as message) {
+  <mat-card appearance="outlined" class="state-card error">
+    <mat-icon>cloud_off</mat-icon>
+    <p>{{ message }}</p>
+    <button mat-stroked-button (click)="load()">
+      <mat-icon>refresh</mat-icon>
+      Reintentar
+    </button>
+  </mat-card>
+} @else if (visible().length === 0) {
+  <mat-card appearance="outlined" class="state-card">
+    <mat-icon>person_search</mat-icon>
+    @if (participants().length === 0) {
+      <p>Todavía no hay participantes. Crea el primero para empezar.</p>
+      <a mat-flat-button routerLink="/participantes/nuevo">Crear participante</a>
+    } @else {
+      <p>Ningún participante coincide con el filtro.</p>
+    }
+  </mat-card>
+} @else {
+  <section class="grid">
+    @for (participant of visible(); track participant.id) {
+      <mat-card appearance="outlined" class="participant" [class.inactive]="!participant.active">
+        <div class="logo" aria-hidden="true">{{ participant.logo }}</div>
+        <div class="info">
+          <h2 class="nick">{{ participant.nick }}</h2>
+          <mat-chip-set>
+            <mat-chip [class]="participant.active ? 'chip-active' : 'chip-inactive'" disableRipple>
+              <mat-icon matChipAvatar>
+                {{ participant.active ? 'check_circle' : 'pause_circle' }}
+              </mat-icon>
+              {{ participant.active ? 'Activo' : 'Inactivo' }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+        <div class="actions">
+          <mat-slide-toggle
+            [checked]="participant.active"
+            [disabled]="saving().has(participant.id)"
+            (change)="toggleActive(participant, $event)"
+            [matTooltip]="participant.active ? 'Desactivar' : 'Activar'"
+            [attr.aria-label]="(participant.active ? 'Desactivar ' : 'Activar ') + participant.nick"
+          />
+          <a
+            mat-icon-button
+            [routerLink]="['/participantes', participant.id, 'editar']"
+            matTooltip="Editar"
+            [attr.aria-label]="'Editar ' + participant.nick"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+        </div>
+      </mat-card>
+    }
+  </section>
+}

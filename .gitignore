@@ -1,0 +1,15 @@
+# Secrets: database credentials are never committed
+backend/.env
+credents.txt
+
+# Course statement
+*.pdf
+
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
+
+# Editors
+.vscode/
+.idea/
