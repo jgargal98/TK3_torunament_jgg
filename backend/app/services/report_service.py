@@ -47,6 +47,12 @@ class ReportService:
         stats.sort(key=lambda item: (-item.wins, item.losses, item.participant.nick.lower()))
         return stats
 
+    def stats_of_participant(self, participant_id: int) -> schemas.ParticipantStats:
+        for item in self.participant_stats():
+            if item.participant.id == participant_id:
+                return item
+        raise NotFoundError(f"No existe el participante {participant_id}")
+
     def tournament_history(self, tournament_id: int) -> list[schemas.MatchHistoryItem]:
         """Matches already played in a tournament, round by round."""
         tournament = self.tournaments.get(tournament_id)

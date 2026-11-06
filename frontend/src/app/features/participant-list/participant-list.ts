@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -15,6 +16,7 @@ import { RouterLink } from '@angular/router';
 import { Participant, ParticipantFilter } from '../../core/models';
 import { errorMessage } from '../../core/api';
 import { ParticipantApi } from '../../core/participant-api';
+import { ParticipantStatsDialog } from './participant-stats-dialog';
 
 @Component({
   selector: 'app-participant-list',
@@ -36,6 +38,7 @@ import { ParticipantApi } from '../../core/participant-api';
 })
 export class ParticipantList implements OnInit {
   private readonly api = inject(ParticipantApi);
+  private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly participants = signal<Participant[]>([]);
@@ -80,6 +83,10 @@ export class ParticipantList implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  protected openStats(participant: Participant): void {
+    this.dialog.open(ParticipantStatsDialog, { data: participant, width: '480px' });
   }
 
   protected toggleActive(participant: Participant, event: MatSlideToggleChange): void {

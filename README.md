@@ -60,6 +60,7 @@ El frontend nunca accede a la base de datos: todo pasa por la API.
 ## Estado: Fase 4 · Informes ✅
 
 - **Página de informes:** clasificación de participantes con combates, victorias, derrotas, porcentaje de victorias y torneos ganados.
+- **Estadísticas de cada jugador:** al pulsar su tarjeta en la página de participantes.
 - **Historial de combates de un torneo:** se consulta en la página de informes, eligiendo el torneo, y en la página de cada torneo, donde se actualiza con cada resultado.
 - **Los BYE no cuentan** como combate ni como victoria, y los participantes desactivados conservan sus estadísticas.
 - Las estadísticas no se guardan: el backend las calcula a partir de los combates almacenados, así que no pueden quedar desincronizadas.
@@ -85,6 +86,7 @@ Pendiente: grabar el vídeo de la entrega final.
 | POST | `/api/tournaments/{id}/bracket` | Sorteo aleatorio de la primera ronda |
 | PUT | `/api/matches/{id}/winner` | Registra el ganador `{ "winner_id": 3 }` y avanza la ronda si está completa |
 | GET | `/api/stats/participants` | Victorias y derrotas por participante, de mejor a peor |
+| GET | `/api/participants/{id}/stats` | Estadísticas de un participante |
 | GET | `/api/tournaments/{id}/history` | Combates jugados en un torneo, sin contar los BYE |
 
 La documentación interactiva está en http://localhost:8000/docs.

@@ -47,6 +47,17 @@ def test_deactivated_participants_keep_their_stats(client):
     assert stats_by_id(client)[champion_id]["wins"] == 1
 
 
+def test_stats_of_one_participant(client):
+    tournament = play_all(client, start_tournament(client, 4))
+    champion_id = tournament["champion"]["id"]
+
+    stats = client.get(f"/api/participants/{champion_id}/stats").json()
+    assert stats["participant"]["id"] == champion_id
+    assert (stats["wins"], stats["losses"], stats["tournaments_won"]) == (2, 0, 1)
+
+    assert client.get("/api/participants/999/stats").status_code == 404
+
+
 def test_history_lists_only_played_matches_in_order(client):
     tournament = start_tournament(client, 3)
     url = f"/api/tournaments/{tournament['id']}/history"

@@ -14,6 +14,10 @@ export class ReportApi {
     return this.http.get<ParticipantStats[]>(`${API_BASE_URL}/stats/participants`);
   }
 
+  getStatsOfParticipant(participantId: number): Observable<ParticipantStats> {
+    return this.http.get<ParticipantStats>(`${API_BASE_URL}/participants/${participantId}/stats`);
+  }
+
   getTournamentHistory(tournamentId: number): Observable<MatchHistoryItem[]> {
     return this.http.get<MatchHistoryItem[]>(`${API_BASE_URL}/tournaments/${tournamentId}/history`);
   }
