@@ -99,6 +99,16 @@ tr.inactive td {
   max-width: 460px;
 }
 
+.bracket {
+  margin-bottom: 20px;
+}
+
+.bracket-error {
+  margin: 0 0 20px;
+  font-weight: 700;
+  color: #c2185b;
+}
+
 .state-card {
   display: flex;
   flex-direction: column;

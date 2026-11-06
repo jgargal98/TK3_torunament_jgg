@@ -84,6 +84,13 @@
       </mat-form-field>
 
       @if (selectedTournament(); as tournamentId) {
+        @if (bracketLoading()) {
+          <mat-progress-bar mode="indeterminate" />
+        } @else if (bracketError(); as message) {
+          <p class="bracket-error">{{ message }}</p>
+        } @else {
+          <app-bracket class="bracket" [rounds]="bracket()" />
+        }
         <app-match-history [tournamentId]="tournamentId" />
       }
     }

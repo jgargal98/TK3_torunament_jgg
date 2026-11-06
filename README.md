@@ -61,7 +61,7 @@ El frontend nunca accede a la base de datos: todo pasa por la API.
 
 - **Página de informes:** clasificación de participantes con combates, victorias, derrotas, porcentaje de victorias y torneos ganados.
 - **Estadísticas de cada jugador:** al pulsar su tarjeta en la página de participantes.
-- **Historial de combates de un torneo:** se consulta en la página de informes, eligiendo el torneo, y en la página de cada torneo, donde se actualiza con cada resultado.
+- **Historial de combates de un torneo:** se consulta en la página de informes, eligiendo el torneo, junto al cuadro en modo solo lectura (el mismo componente que en la página del torneo). También aparece en la página de cada torneo, donde se actualiza con cada resultado.
 - **Los BYE no cuentan** como combate ni como victoria, y los participantes desactivados conservan sus estadísticas.
 - Las estadísticas no se guardan: el backend las calcula a partir de los combates almacenados, así que no pueden quedar desincronizadas.
 - **Mensajes de carga y error** en todas las pantallas, incluido el caso de tener el backend parado.

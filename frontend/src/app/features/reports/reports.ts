@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,15 +8,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 
 import { errorMessage } from '../../core/api';
+import { BracketRound, buildBracket } from '../../core/bracket';
 import { ParticipantStats, STATUS_LABELS, TournamentSummary } from '../../core/models';
 import { ReportApi } from '../../core/report-api';
 import { TournamentApi } from '../../core/tournament-api';
+import { Bracket } from '../../shared/bracket/bracket';
 import { MatchHistory } from '../../shared/match-history/match-history';
 
-/** Reports page: wins and losses per participant and match history of a tournament. */
+/** Reports page: wins and losses per participant, and bracket and match history of a tournament. */
 @Component({
   selector: 'app-reports',
   imports: [
@@ -29,6 +31,7 @@ import { MatchHistory } from '../../shared/match-history/match-history';
     MatIconModule,
     MatProgressBarModule,
     MatSelectModule,
+    Bracket,
     MatchHistory,
   ],
   templateUrl: './reports.html',
@@ -37,6 +40,7 @@ import { MatchHistory } from '../../shared/match-history/match-history';
 export class Reports implements OnInit {
   private readonly reportApi = inject(ReportApi);
   private readonly tournamentApi = inject(TournamentApi);
+  private bracketRequest?: Subscription;
 
   protected readonly stats = signal<ParticipantStats[]>([]);
   /** Tournaments with a bracket: the ones in preparation have no matches to show. */
@@ -45,6 +49,20 @@ export class Reports implements OnInit {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly statusLabels = STATUS_LABELS;
+
+  /** Read-only bracket of the selected tournament. */
+  protected readonly bracket = signal<BracketRound[]>([]);
+  protected readonly bracketLoading = signal(false);
+  protected readonly bracketError = signal<string | null>(null);
+
+  constructor() {
+    effect(() => {
+      const tournamentId = this.selectedTournament();
+      if (tournamentId !== null) {
+        this.loadBracket(tournamentId);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.load();
@@ -67,6 +85,23 @@ export class Reports implements OnInit {
       error: (err) => {
         this.error.set(errorMessage(err));
         this.loading.set(false);
+      },
+    });
+  }
+
+  private loadBracket(tournamentId: number): void {
+    // Only the latest request counts if the user changes tournament quickly.
+    this.bracketRequest?.unsubscribe();
+    this.bracketLoading.set(true);
+    this.bracketError.set(null);
+    this.bracketRequest = this.tournamentApi.getById(tournamentId).subscribe({
+      next: (tournament) => {
+        this.bracket.set(buildBracket(tournament.matches, tournament.participant_count));
+        this.bracketLoading.set(false);
+      },
+      error: (err) => {
+        this.bracketError.set(errorMessage(err));
+        this.bracketLoading.set(false);
       },
     });
   }
