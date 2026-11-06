@@ -57,7 +57,15 @@ El frontend nunca accede a la base de datos: todo pasa por la API.
 - **Estados del torneo:** Preparación → Cuadro generado → En curso → Finalizado.
 - **Migración:** al arrancar, el backend añade a `tournaments` las columnas nuevas (`champion_id`, `finished_at`) si la tabla ya existía.
 
-Pendiente: fase 4 (informes y estadísticas).
+## Estado: Fase 4 · Informes ✅
+
+- **Página de informes:** clasificación de participantes con combates, victorias, derrotas, porcentaje de victorias y torneos ganados.
+- **Historial de combates de un torneo:** se consulta en la página de informes, eligiendo el torneo, y en la página de cada torneo, donde se actualiza con cada resultado.
+- **Los BYE no cuentan** como combate ni como victoria, y los participantes desactivados conservan sus estadísticas.
+- Las estadísticas no se guardan: el backend las calcula a partir de los combates almacenados, así que no pueden quedar desincronizadas.
+- **Mensajes de carga y error** en todas las pantallas, incluido el caso de tener el backend parado.
+
+Pendiente: grabar el vídeo de la entrega final.
 
 ## API
 
@@ -76,6 +84,8 @@ Pendiente: fase 4 (informes y estadísticas).
 | DELETE | `/api/tournaments/{id}` | Elimina el torneo (solo en preparación) |
 | POST | `/api/tournaments/{id}/bracket` | Sorteo aleatorio de la primera ronda |
 | PUT | `/api/matches/{id}/winner` | Registra el ganador `{ "winner_id": 3 }` y avanza la ronda si está completa |
+| GET | `/api/stats/participants` | Victorias y derrotas por participante, de mejor a peor |
+| GET | `/api/tournaments/{id}/history` | Combates jugados en un torneo, sin contar los BYE |
 
 La documentación interactiva está en http://localhost:8000/docs.
 
