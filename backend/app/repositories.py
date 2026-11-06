@@ -61,3 +61,12 @@ class TournamentRepository:
 
     def get_match(self, match_id: int) -> Match | None:
         return self.session.get(Match, match_id)
+
+    def played_matches(self) -> list[Match]:
+        """Matches with a result, leaving out BYEs."""
+        query = (
+            select(Match)
+            .options(selectinload(Match.participant1), selectinload(Match.participant2))
+            .where(Match.winner_id.is_not(None), Match.is_bye.is_(False))
+        )
+        return list(self.session.scalars(query))

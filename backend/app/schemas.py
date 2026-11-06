@@ -100,6 +100,27 @@ class TournamentDetail(TournamentSummary):
     matches: list[Match]
 
 
+# ---------- Reports ----------
+
+
+class ParticipantStats(BaseModel):
+    participant: ParticipantSummary
+    matches_played: int
+    wins: int
+    losses: int
+    win_rate: float  # percentage of matches won, 0 when nothing has been played
+    tournaments_won: int
+
+
+class MatchHistoryItem(BaseModel):
+    id: int
+    round: int
+    round_name: str
+    winner: ParticipantSummary
+    loser: ParticipantSummary
+    resolved_at: datetime
+
+
 class HealthResponse(BaseModel):
     status: str
     database: str

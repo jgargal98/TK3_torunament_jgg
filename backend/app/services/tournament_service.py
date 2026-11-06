@@ -21,6 +21,12 @@ def total_rounds(participant_count: int) -> int:
     return (participant_count - 1).bit_length() if participant_count >= 2 else 0
 
 
+def round_name(round_number: int, rounds: int) -> str:
+    matches_in_round = 2 ** (rounds - round_number)
+    names = {1: "Final", 2: "Semifinales", 4: "Cuartos", 8: "Octavos"}
+    return names.get(matches_in_round, f"Ronda {round_number}")
+
+
 def bye_positions(slots: int, byes: int) -> set[int]:
     """First-round matches that get a BYE, spread along the bracket so they do not all
     fall on the same side (8 slots, 2 BYEs -> matches 0 and 2: one in each half)."""

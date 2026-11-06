@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_session
 from app.services.participant_service import ParticipantService
+from app.services.report_service import ReportService
 from app.services.tournament_service import TournamentService
 
 SessionDep = Annotated[Session, Depends(get_session)]
@@ -18,5 +19,10 @@ def get_tournament_service(session: SessionDep) -> TournamentService:
     return TournamentService(session)
 
 
+def get_report_service(session: SessionDep) -> ReportService:
+    return ReportService(session)
+
+
 ParticipantServiceDep = Annotated[ParticipantService, Depends(get_participant_service)]
 TournamentServiceDep = Annotated[TournamentService, Depends(get_tournament_service)]
+ReportServiceDep = Annotated[ReportService, Depends(get_report_service)]
