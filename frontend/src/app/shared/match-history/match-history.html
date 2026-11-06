@@ -1,0 +1,28 @@
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+} @else if (error(); as message) {
+  <p class="message error">{{ message }}</p>
+} @else if (matches().length === 0) {
+  <p class="message">Todavía no se ha jugado ningún combate en este torneo.</p>
+} @else {
+  <ol class="history">
+    @for (match of matches(); track match.id) {
+      <li class="item">
+        <span class="round">{{ match.round_name }}</span>
+        <span class="player winner">
+          <span aria-hidden="true">{{ match.winner.logo }}</span>
+          {{ match.winner.nick }}
+          <span class="tag">WIN</span>
+        </span>
+        <span class="vs">vence a</span>
+        <span class="player loser">
+          <span aria-hidden="true">{{ match.loser.logo }}</span>
+          {{ match.loser.nick }}
+        </span>
+        <time class="date" [attr.datetime]="match.resolved_at">
+          {{ match.resolved_at | date: 'dd/MM/yyyy HH:mm' }}
+        </time>
+      </li>
+    }
+  </ol>
+}

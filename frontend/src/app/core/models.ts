@@ -74,3 +74,24 @@ export interface TournamentInput {
   name: string;
   participant_ids: number[];
 }
+
+/** Row of the participants report (GET /api/stats/participants). */
+export interface ParticipantStats {
+  participant: ParticipantSummary;
+  matches_played: number;
+  wins: number;
+  losses: number;
+  /** Percentage of matches won. */
+  win_rate: number;
+  tournaments_won: number;
+}
+
+/** Match already played (GET /api/tournaments/{id}/history). BYEs are not included. */
+export interface MatchHistoryItem {
+  id: number;
+  round: number;
+  round_name: string;
+  winner: ParticipantSummary;
+  loser: ParticipantSummary;
+  resolved_at: string;
+}

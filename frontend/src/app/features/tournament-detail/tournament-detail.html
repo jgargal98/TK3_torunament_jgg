@@ -123,5 +123,10 @@
         }
       </p>
     </section>
+
+    <section class="history-section">
+      <h2>Historial de combates</h2>
+      <app-match-history [tournamentId]="tournament.id" [refreshKey]="tournament.matches.length - tournament.pending_matches" />
+    </section>
   }
 }

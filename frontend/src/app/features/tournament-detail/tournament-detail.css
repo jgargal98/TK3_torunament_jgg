@@ -241,9 +241,14 @@ h1 {
   }
 }
 
-.bracket-section h2 {
+.bracket-section h2,
+.history-section h2 {
   margin: 0 0 16px;
   font-size: 14px;
+}
+
+.history-section {
+  margin-top: 36px;
 }
 
 .legend {

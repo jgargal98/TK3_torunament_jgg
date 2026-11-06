@@ -1,0 +1,91 @@
+<header class="page-header">
+  <h1>Informes</h1>
+  <p class="subtitle">Los BYE no cuentan como combate ni como victoria</p>
+</header>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+} @else if (error(); as message) {
+  <mat-card appearance="outlined" class="state-card error">
+    <mat-icon>cloud_off</mat-icon>
+    <p>{{ message }}</p>
+    <button mat-stroked-button (click)="load()">
+      <mat-icon>refresh</mat-icon>
+      Reintentar
+    </button>
+  </mat-card>
+} @else {
+  <section class="section">
+    <h2>Victorias y derrotas</h2>
+    @if (stats().length === 0) {
+      <mat-card appearance="outlined" class="state-card">
+        <mat-icon>groups</mat-icon>
+        <p>Todavía no hay participantes.</p>
+        <a mat-flat-button routerLink="/participantes">Ir a participantes</a>
+      </mat-card>
+    } @else {
+      <div class="table-wrapper">
+        <table class="ranking">
+          <thead>
+            <tr>
+              <th scope="col" class="num">#</th>
+              <th scope="col">Jugador</th>
+              <th scope="col" class="num">Combates</th>
+              <th scope="col" class="num">Victorias</th>
+              <th scope="col" class="num">Derrotas</th>
+              <th scope="col" class="num">% Vict.</th>
+              <th scope="col" class="num">Títulos</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of stats(); track row.participant.id; let index = $index) {
+              <tr [class.inactive]="!row.participant.active">
+                <td class="num">{{ index + 1 }}</td>
+                <td>
+                  <span class="player">
+                    <span class="logo" aria-hidden="true">{{ row.participant.logo }}</span>
+                    <span class="nick">{{ row.participant.nick }}</span>
+                    @if (!row.participant.active) {
+                      <span class="arcade-badge off">Inactivo</span>
+                    }
+                  </span>
+                </td>
+                <td class="num">{{ row.matches_played }}</td>
+                <td class="num wins">{{ row.wins }}</td>
+                <td class="num losses">{{ row.losses }}</td>
+                <td class="num">{{ row.win_rate | number: '1.0-1' }}%</td>
+                <td class="num">{{ row.tournaments_won > 0 ? '🏆 ' + row.tournaments_won : '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section class="section">
+    <h2>Historial de combates</h2>
+    @if (tournaments().length === 0) {
+      <mat-card appearance="outlined" class="state-card">
+        <mat-icon>emoji_events</mat-icon>
+        <p>Todavía no hay torneos con el cuadro generado.</p>
+        <a mat-flat-button routerLink="/torneos">Ir a torneos</a>
+      </mat-card>
+    } @else {
+      <mat-form-field appearance="outline" class="select">
+        <mat-label>Torneo</mat-label>
+        <mat-select [ngModel]="selectedTournament()" (ngModelChange)="selectedTournament.set($event)">
+          @for (tournament of tournaments(); track tournament.id) {
+            <mat-option [value]="tournament.id">
+              {{ tournament.name }} · {{ statusLabels[tournament.status] }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (selectedTournament(); as tournamentId) {
+        <app-match-history [tournamentId]="tournamentId" />
+      }
+    }
+  </section>
+}

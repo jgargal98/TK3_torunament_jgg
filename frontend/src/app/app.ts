@@ -23,6 +23,10 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         <mat-icon>emoji_events</mat-icon>
         <span>Torneos</span>
       </a>
+      <a routerLink="/informes" routerLinkActive="active" class="nav-link">
+        <mat-icon>leaderboard</mat-icon>
+        <span>Informes</span>
+      </a>
     </mat-toolbar>
 
     <main class="content">
@@ -92,8 +96,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       margin: 0 auto;
       padding: 32px 16px 64px;
     }
+    @media (max-width: 960px) {
+      .brand-sub {
+        display: none;
+      }
+    }
     @media (max-width: 700px) {
-      .brand-sub,
       .nav-link span {
         display: none;
       }

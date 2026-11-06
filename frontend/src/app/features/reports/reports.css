@@ -1,0 +1,120 @@
+.page-header {
+  margin-bottom: 28px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 22px;
+  text-shadow: 3px 3px 0 var(--arcade-lime);
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  font-weight: 700;
+  color: var(--arcade-muted-ink);
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.section h2 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+/* The table scrolls inside its wrapper on narrow screens, not the whole page. */
+.table-wrapper {
+  overflow-x: auto;
+  background: var(--arcade-paper);
+  border: var(--arcade-border);
+  box-shadow: var(--arcade-shadow);
+}
+
+.ranking {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+}
+
+th {
+  padding: 12px 10px;
+  font-family: var(--arcade-font);
+  font-size: 8px;
+  font-weight: 400;
+  text-align: left;
+  background: var(--arcade-night);
+  color: var(--arcade-yellow);
+}
+
+td {
+  padding: 8px 10px;
+  border-top: 2px solid var(--arcade-muted-bg);
+}
+
+.num {
+  text-align: center;
+  white-space: nowrap;
+}
+
+tr.inactive td {
+  color: var(--arcade-muted-ink);
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+  background: var(--arcade-cream);
+  border: 2px solid var(--arcade-ink);
+}
+
+.nick {
+  font-family: var(--arcade-font);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.wins {
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.losses {
+  font-weight: 700;
+  color: #c2185b;
+}
+
+.select {
+  width: 100%;
+  max-width: 460px;
+}
+
+.state-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 16px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.state-card mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.state-card.error.mat-mdc-card {
+  background: #ffd6de;
+}

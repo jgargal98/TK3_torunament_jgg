@@ -15,6 +15,7 @@ import { STATUS_LABELS, TournamentDetail as Tournament } from '../../core/models
 import { TournamentApi } from '../../core/tournament-api';
 import { Bracket, WinnerPick } from '../../shared/bracket/bracket';
 import { ConfirmDialog, ConfirmDialogData } from '../../shared/confirm-dialog/confirm-dialog';
+import { MatchHistory } from '../../shared/match-history/match-history';
 
 /** Minimum time the draw animation is shown, even if the API answers sooner. */
 const DRAW_ANIMATION_MS = 1600;
@@ -30,6 +31,7 @@ const REEL_COUNT = 3;
     MatIconModule,
     MatProgressBarModule,
     Bracket,
+    MatchHistory,
   ],
   templateUrl: './tournament-detail.html',
   styleUrl: './tournament-detail.css',

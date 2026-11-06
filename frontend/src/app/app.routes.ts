@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { ParticipantForm } from './features/participant-form/participant-form';
 import { ParticipantList } from './features/participant-list/participant-list';
+import { Reports } from './features/reports/reports';
 import { TournamentDetail } from './features/tournament-detail/tournament-detail';
 import { TournamentList } from './features/tournament-list/tournament-list';
 import { TournamentWizard } from './features/tournament-wizard/tournament-wizard';
@@ -19,5 +20,6 @@ export const routes: Routes = [
   { path: 'torneos/nuevo', component: TournamentWizard, title: 'Nuevo torneo · TK3' },
   { path: 'torneos/:id', component: TournamentDetail, title: 'Torneo · TK3' },
   { path: 'torneos/:id/editar', component: TournamentWizard, title: 'Editar torneo · TK3' },
+  { path: 'informes', component: Reports, title: 'Informes · TK3' },
   { path: '**', redirectTo: 'participantes' },
 ];

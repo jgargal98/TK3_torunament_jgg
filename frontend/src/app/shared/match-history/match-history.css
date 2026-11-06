@@ -1,0 +1,71 @@
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  background: var(--arcade-paper);
+  border: 2px solid var(--arcade-ink);
+}
+
+.round {
+  flex: none;
+  width: 100px;
+  font-family: var(--arcade-font);
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.player {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.tag {
+  padding: 3px 4px;
+  font-family: var(--arcade-font);
+  font-size: 7px;
+  background: var(--arcade-ink);
+  color: var(--arcade-lime);
+}
+
+.vs {
+  font-size: 12px;
+  color: var(--arcade-muted-ink);
+}
+
+.loser {
+  font-weight: 400;
+  color: var(--arcade-muted-ink);
+  text-decoration: line-through;
+}
+
+.date {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--arcade-muted-ink);
+}
+
+.message {
+  margin: 0;
+  padding: 16px;
+  font-weight: 700;
+  background: var(--arcade-paper);
+  border: 2px dashed var(--arcade-muted-ink);
+}
+
+.message.error {
+  color: #c2185b;
+  border-color: #c2185b;
+}
